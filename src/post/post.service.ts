@@ -11,4 +11,8 @@ export class PostService {
       data,
     });
   }
+
+  async count() {
+    return await this.prisma.post.count();
+  }
 }

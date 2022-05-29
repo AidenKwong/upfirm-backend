@@ -66,7 +66,7 @@ CREATE TABLE "Post" (
 -- CreateTable
 CREATE TABLE "Comment" (
     "id" SERIAL NOT NULL,
-    "text" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
     "authorId" INTEGER NOT NULL,
     "postId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -7,10 +7,11 @@ import { CompanyModule } from './company/company.module';
 import { IndustryModule } from './industry/industry.module';
 import { JobModule } from './job/job.module';
 import { PostModule } from './post/post.module';
+import { CommentModule } from './comment/comment.module';
 
 
 @Module({
-  imports: [UserModule, CompanyModule, IndustryModule, JobModule, PostModule],
+  imports: [UserModule, CompanyModule, IndustryModule, JobModule, PostModule, CommentModule],
   controllers: [AppController, UserController],
   providers: [AppService],
 })
