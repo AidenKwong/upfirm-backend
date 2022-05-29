@@ -17,7 +17,7 @@ model User {
   email     String    @unique
   password  String
   age       Int
-  gender    String
+  gender    Gender
   country   String
   companies Company[]
   jobs      Job[]
@@ -41,11 +41,13 @@ model Company {
   websiteUrl  String
   jobs        Job[]
   employees   User[]
+
+  @@unique([name, country, city, industryId])
 }
 
 model Industry {
   id        Int       @id @default(autoincrement())
-  name      String
+  name      String    @unique()
   companies Company[]
 }
 
@@ -55,11 +57,10 @@ model Job {
   description String
   company     Company  @relation(fields: [companyId], references: [id])
   companyId   Int
-  location    String
+  country     String
   salary      Int
   startDate   DateTime
   endDate     DateTime
-  status      String
   User        User     @relation(fields: [userId], references: [id])
   userId      Int
 }

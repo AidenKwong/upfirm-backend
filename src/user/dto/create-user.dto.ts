@@ -1,4 +1,5 @@
-import { Exclude, plainToClass, Transform, Type } from "class-transformer";
+import { Gender } from "@prisma/client";
+import { Type } from "class-transformer";
 import {
   IsEmail,
   IsNotEmpty,
@@ -24,16 +25,16 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(8)
-  @Exclude()
   password: string;
 
+  @Type(() => Number)
   @IsNumber()
   @IsNotEmpty()
   age: number;
 
   @IsString()
   @IsNotEmpty()
-  gender: string;
+  gender: Gender;
 
   @IsString()
   @IsNotEmpty()

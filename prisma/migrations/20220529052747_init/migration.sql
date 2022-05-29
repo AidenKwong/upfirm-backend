@@ -9,8 +9,8 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "age" INTEGER NOT NULL,
-    "gender" TEXT NOT NULL,
-    "location" TEXT NOT NULL,
+    "gender" "Gender" NOT NULL,
+    "country" TEXT NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -42,11 +42,10 @@ CREATE TABLE "Job" (
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "companyId" INTEGER NOT NULL,
-    "location" TEXT NOT NULL,
+    "country" TEXT NOT NULL,
     "salary" INTEGER NOT NULL,
     "startDate" TIMESTAMP(3) NOT NULL,
     "endDate" TIMESTAMP(3) NOT NULL,
-    "status" TEXT NOT NULL,
     "userId" INTEGER NOT NULL,
 
     CONSTRAINT "Job_pkey" PRIMARY KEY ("id")
@@ -82,6 +81,12 @@ CREATE TABLE "_CompanyToUser" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Company_name_country_city_industryId_key" ON "Company"("name", "country", "city", "industryId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Industry_name_key" ON "Industry"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_CompanyToUser_AB_unique" ON "_CompanyToUser"("A", "B");
