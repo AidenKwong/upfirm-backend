@@ -84,7 +84,7 @@ CREATE TABLE "_CompanyToUser" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Company_name_country_city_industryId_key" ON "Company"("name", "country", "city", "industryId");
+CREATE UNIQUE INDEX "Company_name_country_city_key" ON "Company"("name", "country", "city");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Industry_name_key" ON "Industry"("name");

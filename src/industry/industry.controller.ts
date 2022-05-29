@@ -16,8 +16,8 @@ export class IndustryController {
   constructor(private readonly industryService: IndustryService) {}
 
   @Post()
-  create(@Body() createIndustryDto: CreateIndustryDto) {
-    return this.industryService.create(createIndustryDto);
+  async create(@Body() createIndustryDto: CreateIndustryDto) {
+    return await this.industryService.create(createIndustryDto);
   }
 
   @Get()

@@ -43,7 +43,7 @@ model Company {
   employees   User[]
   posts       Post[]
 
-  @@unique([name, country, city, industryId])
+  @@unique([name, country, city])
 }
 
 model Industry {

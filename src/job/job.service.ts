@@ -7,8 +7,8 @@ import { UpdateJobDto } from "./dto/update-job.dto";
 export class JobService {
   constructor(private prisma: PrismaService) {}
 
-  create(createJobDto: CreateJobDto) {
-    return this.prisma.job.create({
+  async create(createJobDto: CreateJobDto) {
+    return await this.prisma.job.create({
       data: createJobDto,
     });
   }
