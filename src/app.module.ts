@@ -6,10 +6,11 @@ import { UserModule } from "./user/user.module";
 import { CompanyModule } from './company/company.module';
 import { IndustryModule } from './industry/industry.module';
 import { JobModule } from './job/job.module';
+import { PostModule } from './post/post.module';
 
 
 @Module({
-  imports: [UserModule, CompanyModule, IndustryModule, JobModule],
+  imports: [UserModule, CompanyModule, IndustryModule, JobModule, PostModule],
   controllers: [AppController, UserController],
   providers: [AppService],
 })

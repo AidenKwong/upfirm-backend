@@ -8,8 +8,9 @@ interface Country {
 }
 
 const num_of_users = 100;
-const num_of_companies = 100;
+const num_of_companies = 50;
 const num_of_jobs = 100;
+const num_of_posts = 500;
 
 const country_name_list = country_list.map((country: Country) => country.name);
 
@@ -116,9 +117,38 @@ const jobsReq = (num: Number) => {
   return Promise.all(allRes);
 };
 
+const getRandomPost = async () => {
+  const user_count = await userCount();
+  const company_count = await companyCount();
+
+  return {
+    title: faker.lorem.sentence(),
+    content: faker.lorem.paragraph(),
+    authorId: Math.ceil(Math.random() * user_count.data),
+    companyId: Math.ceil(Math.random() * company_count.data),
+  };
+};
+
+const postsReq = (num: Number) => {
+  const allRes = Array(num)
+    .fill(0)
+    .map(async () => {
+      try {
+        const res = await axios.post(
+          "http://localhost:3000/post",
+          await getRandomPost(),
+        );
+        return res;
+      } catch (error) {}
+    });
+
+  return Promise.all(allRes);
+};
+
 (async () => {
   await Promise.all(usersReq);
   await Promise.all(industriesReq);
   await Promise.all(companiesReq);
   await jobsReq(num_of_jobs);
+  await postsReq(num_of_posts);
 })();

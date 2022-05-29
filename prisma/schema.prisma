@@ -41,6 +41,7 @@ model Company {
   websiteUrl  String
   jobs        Job[]
   employees   User[]
+  posts       Post[]
 
   @@unique([name, country, city, industryId])
 }
@@ -66,13 +67,15 @@ model Job {
 }
 
 model Post {
-  id          Int       @id @default(autoincrement())
-  title       String
-  description String
-  author      User      @relation(fields: [authorId], references: [id])
-  authorId    Int
-  comments    Comment[]
-  createdAt   DateTime  @default(now())
+  id        Int       @id @default(autoincrement())
+  title     String
+  content   String
+  author    User      @relation(fields: [authorId], references: [id])
+  authorId  Int
+  comments  Comment[]
+  company   Company   @relation(fields: [companyId], references: [id])
+  companyId Int
+  createdAt DateTime  @default(now())
 }
 
 model Comment {
