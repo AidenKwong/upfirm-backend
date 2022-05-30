@@ -78,28 +78,17 @@ const companies = createCompanies(num_of_companies);
   await Promise.all(companiesReq);
 
   console.log("Creating jobs...");
-  const companyCount = async () => {
-    const { data } = await axios.get("http://localhost:3000/company/count");
-    return data;
-  };
-
-  const userCount = async () => {
-    const { data } = await axios.get("http://localhost:3000/user/count");
-    return data;
-  };
 
   const genRandomJob = async () => {
-    const company_count = await companyCount();
-    const user_count = await userCount();
     return {
       title: faker.name.jobTitle(),
       description: faker.lorem.paragraph(),
-      companyId: Math.ceil(Math.random() * company_count),
+      companyId: Math.ceil(Math.random() * num_of_companies),
       country: randomPicker(country_name_list),
       salary: Math.ceil(Math.random() * 100000),
       startDate: faker.date.past().toISOString(),
       endDate: faker.date.future().toISOString(),
-      userId: Math.ceil(Math.random() * user_count),
+      userId: Math.ceil(Math.random() * num_of_users),
     };
   };
 
@@ -107,24 +96,20 @@ const companies = createCompanies(num_of_companies);
     Array(num_of_jobs)
       .fill(0)
       .map(async () => {
-        const res = await axios.post(
+        return await axios.post(
           "http://localhost:3000/job",
           await genRandomJob(),
         );
-        return res;
       }),
   );
 
   console.log("Creating posts...");
   const genRandomPost = async () => {
-    const user_count = await userCount();
-    const company_count = await companyCount();
-
     return {
       title: faker.lorem.sentence(),
       content: faker.lorem.paragraph(),
-      authorId: Math.ceil(Math.random() * user_count),
-      companyId: Math.ceil(Math.random() * company_count),
+      authorId: Math.ceil(Math.random() * num_of_users),
+      companyId: Math.ceil(Math.random() * num_of_companies),
     };
   };
 
@@ -132,27 +117,20 @@ const companies = createCompanies(num_of_companies);
     Array(num_of_posts)
       .fill(0)
       .map(async () => {
-        const res = await axios.post(
+        return await axios.post(
           "http://localhost:3000/post",
           await genRandomPost(),
         );
-        return res;
       }),
   );
 
   console.log("Creating comments...");
-  const postCount = async () => {
-    const { data } = await axios.get("http://localhost:3000/post/count");
-    return data;
-  };
 
-  const genRandomComment = async () => {
-    const user_count = await userCount();
-    const post_count = await postCount();
+  const genRandomComment = () => {
     return {
       content: faker.lorem.paragraph(),
-      authorId: Math.ceil(Math.random() * user_count),
-      postId: Math.ceil(Math.random() * post_count),
+      authorId: Math.ceil(Math.random() * num_of_users),
+      postId: Math.ceil(Math.random() * num_of_posts),
     };
   };
 
@@ -160,8 +138,10 @@ const companies = createCompanies(num_of_companies);
     Array(num_of_comments)
       .fill(0)
       .map(async () => {
-        const comment = await genRandomComment();
-        return await axios.post("http://localhost:3000/comment", comment);
+        return await axios.post(
+          "http://localhost:3000/comment",
+          genRandomComment(),
+        );
       }),
   );
 })();
