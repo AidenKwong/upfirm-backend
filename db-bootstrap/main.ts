@@ -61,7 +61,7 @@ const companies = createCompanies(num_of_companies);
   });
   await Promise.all(usersReq);
 
-  console.log("Createing industries...");
+  console.log("Creating industries...");
   const industries = industry_list;
   const industriesReq = industries.map(async (industry: string) => {
     return await axios.post("http://localhost:3000/industry", {
@@ -84,7 +84,6 @@ const companies = createCompanies(num_of_companies);
       title: faker.name.jobTitle(),
       description: faker.lorem.paragraph(),
       companyId: Math.ceil(Math.random() * num_of_companies),
-      country: randomPicker(country_name_list),
       salary: Math.ceil(Math.random() * 100000),
       startDate: faker.date.past().toISOString(),
       endDate: faker.date.future().toISOString(),

@@ -42,7 +42,6 @@ CREATE TABLE "Job" (
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "companyId" INTEGER NOT NULL,
-    "country" TEXT NOT NULL,
     "salary" INTEGER NOT NULL,
     "startDate" TIMESTAMP(3) NOT NULL,
     "endDate" TIMESTAMP(3) NOT NULL,

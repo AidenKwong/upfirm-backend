@@ -15,10 +15,6 @@ export class CreateJobDto {
   @IsNotEmpty()
   companyId: number;
 
-  @IsString()
-  @IsNotEmpty()
-  country: string;
-
   @Type(() => Number)
   @IsNumber()
   @IsNotEmpty()

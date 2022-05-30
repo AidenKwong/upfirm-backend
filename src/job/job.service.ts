@@ -7,10 +7,22 @@ import { UpdateJobDto } from "./dto/update-job.dto";
 export class JobService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createJobDto: CreateJobDto) {
-    return await this.prisma.job.create({
-      data: createJobDto,
+  async create(data: CreateJobDto) {
+    const job = await this.prisma.job.create({
+      data,
     });
+    await this.prisma.company.update({
+      where: { id: data.companyId },
+      data: {
+        jobs: {
+          connect: { id: job.id },
+        },
+        employees: {
+          connect: { id: data.userId },
+        },
+      },
+    });
+    return job;
   }
 
   findAll() {

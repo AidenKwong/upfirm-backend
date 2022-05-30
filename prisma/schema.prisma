@@ -58,7 +58,6 @@ model Job {
   description String
   company     Company  @relation(fields: [companyId], references: [id])
   companyId   Int
-  country     String
   salary      Int
   startDate   DateTime
   endDate     DateTime
