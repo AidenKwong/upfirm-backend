@@ -6,18 +6,21 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from "@nestjs/common";
 import { JobService } from "./job.service";
 import { CreateJobDto } from "./dto/create-job.dto";
 import { UpdateJobDto } from "./dto/update-job.dto";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 
 @Controller("job")
 export class JobController {
   constructor(private readonly jobService: JobService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createJobDto: CreateJobDto) {
-    return await this.jobService.create(createJobDto);
+  async create(@Body() dto: CreateJobDto) {
+    return await this.jobService.create(dto);
   }
 
   @Get()

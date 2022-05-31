@@ -1,8 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateCompanyDto } from "./dto/create-company.dto";
-import { UpdateCompanyDto } from "./dto/update-company.dto";
-import { Company, Prisma } from "@prisma/client";
+import { FindManyCompaniesDto } from "./dto/find-many-companies.dto";
 
 @Injectable()
 export class CompanyService {
@@ -11,6 +10,12 @@ export class CompanyService {
   async create(data: CreateCompanyDto) {
     return await this.prisma.company.create({
       data,
+    });
+  }
+
+  async findMany(data: FindManyCompaniesDto) {
+    return await this.prisma.company.findMany({
+      ...data,
     });
   }
 
@@ -24,12 +29,5 @@ export class CompanyService {
 
   async count() {
     return await this.prisma.company.count();
-  }
-
-  async update(id: number, data: UpdateCompanyDto) {
-    return "This action updates a company";
-  }
-  remove(id: number) {
-    return `This action removes a #${id} company`;
   }
 }
