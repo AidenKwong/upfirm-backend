@@ -24,12 +24,13 @@ export class CompanyController {
 
   @Get()
   async findMany(@Query() dto: FindManyCompaniesDto) {
-    const { orderBy, where, ...rest } = dto;
+    const { orderBy, where, include, ...rest } = dto;
 
     return await this.companyService.findMany({
       ...rest,
       orderBy: orderBy && JSON.parse(orderBy),
-      where: where && JSON.parse(dto.where),
+      where: where && JSON.parse(where),
+      include: include && JSON.parse(include),
     });
   }
 

@@ -2,11 +2,14 @@ const axios = require("axios");
 const { faker } = require("@faker-js/faker");
 const { country_list, industry_list } = require("./constants.ts");
 const fs = require("fs");
+require("dotenv").config();
+
 interface Country {
   name: string;
   code: string;
 }
 
+const SERVER_URL = `http://localhost:${process.env.PORT}`;
 const num_of_users = 100;
 const num_of_companies = 50;
 const num_of_jobs = 100;
@@ -65,14 +68,14 @@ file.end();
 (async () => {
   console.log("Creating users...");
   const usersReq = users.map(async (user) => {
-    return await axios.post("http://localhost:3000/user", user);
+    return await axios.post(`${SERVER_URL}/user`, user);
   });
   await Promise.all(usersReq);
 
   console.log("Creating industries...");
   const industries = industry_list;
   const industriesReq = industries.map(async (industry: string) => {
-    return await axios.post("http://localhost:3000/industry", {
+    return await axios.post(`${SERVER_URL}/industry`, {
       name: industry,
     });
   });
@@ -80,7 +83,7 @@ file.end();
 
   console.log("Creating companies...");
   const companiesReq = companies.map(async (company) => {
-    return await axios.post("http://localhost:3000/company", company);
+    return await axios.post(`${SERVER_URL}/company`, company);
   });
 
   await Promise.all(companiesReq);
@@ -103,10 +106,7 @@ file.end();
     Array(num_of_jobs)
       .fill(0)
       .map(async () => {
-        return await axios.post(
-          "http://localhost:3000/job",
-          await genRandomJob(),
-        );
+        return await axios.post(`${SERVER_URL}/job`, await genRandomJob());
       }),
   );
 
@@ -124,10 +124,7 @@ file.end();
     Array(num_of_posts)
       .fill(0)
       .map(async () => {
-        return await axios.post(
-          "http://localhost:3000/post",
-          await genRandomPost(),
-        );
+        return await axios.post(`${SERVER_URL}/post`, await genRandomPost());
       }),
   );
 
@@ -146,7 +143,7 @@ file.end();
       .fill(0)
       .map(async () => {
         return await axios.post(
-          "http://localhost:3000/comment",
+          `${SERVER_URL}/comment`,
           await genRandomComment(),
         );
       }),
@@ -157,7 +154,7 @@ file.end();
       .fill(0)
       .map(async () => {
         return await axios.post(
-          "http://localhost:3000/comment",
+          `${SERVER_URL}/comment`,
           await genRandomComment(),
         );
       }),

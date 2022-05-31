@@ -18,4 +18,7 @@ export class FindManyCompaniesDto {
 
   @IsOptional()
   where?: any;
+
+  @IsOptional()
+  include?: any;
 }
