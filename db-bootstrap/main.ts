@@ -1,7 +1,7 @@
 const axios = require("axios");
 const { faker } = require("@faker-js/faker");
 const { country_list, industry_list } = require("./constants.ts");
-
+const fs = require("fs");
 interface Country {
   name: string;
   code: string;
@@ -11,7 +11,7 @@ const num_of_users = 100;
 const num_of_companies = 50;
 const num_of_jobs = 100;
 const num_of_posts = 500;
-const num_of_comments = 1000;
+const num_of_comments = 500;
 
 const country_name_list = country_list.map((country: Country) => country.name);
 
@@ -53,6 +53,14 @@ const createCompanies = (num: Number) => {
 
 const users = createUsers(num_of_users);
 const companies = createCompanies(num_of_companies);
+
+const file = fs.createWriteStream("users.js");
+file.write("[");
+users.forEach(function (v) {
+  file.write(JSON.stringify(v) + "," + "\n");
+});
+file.write("]");
+file.end();
 
 (async () => {
   console.log("Creating users...");
@@ -125,7 +133,7 @@ const companies = createCompanies(num_of_companies);
 
   console.log("Creating comments...");
 
-  const genRandomComment = () => {
+  const genRandomComment = async () => {
     return {
       content: faker.lorem.paragraph(),
       authorId: Math.ceil(Math.random() * num_of_users),
@@ -139,7 +147,18 @@ const companies = createCompanies(num_of_companies);
       .map(async () => {
         return await axios.post(
           "http://localhost:3000/comment",
-          genRandomComment(),
+          await genRandomComment(),
+        );
+      }),
+  );
+  console.log("Creating second batch of comments...");
+  await Promise.all(
+    Array(num_of_comments)
+      .fill(0)
+      .map(async () => {
+        return await axios.post(
+          "http://localhost:3000/comment",
+          await genRandomComment(),
         );
       }),
   );
