@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
+import { FindManyDto } from "src/shared-dto/find-many.dto";
 import { CreateJobDto } from "./dto/create-job.dto";
 import { UpdateJobDto } from "./dto/update-job.dto";
 
@@ -25,8 +26,14 @@ export class JobService {
     return job;
   }
 
-  findAll() {
-    return `This action returns all job`;
+  async findMany(data: FindManyDto) {
+    const { where, ...rest } = data;
+    return await this.prisma.job.findMany({
+      ...rest,
+      where: {
+        companyId: parseInt(where.companyId, 10),
+      },
+    });
   }
 
   findOne(id: number) {

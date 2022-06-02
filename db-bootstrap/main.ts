@@ -25,8 +25,7 @@ const randomPicker = (list: Array<any>) =>
 
 const genRandomUser = () => {
   return {
-    firstName: faker.name.firstName(),
-    lastName: faker.name.lastName(),
+    username: faker.name.firstName() + faker.name.lastName(),
     email: faker.internet.email(),
     password: faker.internet.password(),
     age: Math.ceil(Math.random() * 100),
@@ -50,12 +49,7 @@ const createUsers = (num: Number) => {
   return Array.from(new Array(num), genRandomUser);
 };
 
-const createCompanies = (num: Number) => {
-  return Array.from(new Array(num), genRandomCompany);
-};
-
 const users = createUsers(num_of_users);
-const companies = createCompanies(num_of_companies);
 
 const file = fs.createWriteStream("users.js");
 file.write("[");
@@ -79,14 +73,22 @@ file.end();
       name: industry,
     });
   });
+
   await Promise.all(industriesReq);
 
   console.log("Creating companies...");
-  const companiesReq = companies.map(async (company) => {
-    return await axios.post(`${SERVER_URL}/company`, company);
-  });
 
-  await Promise.all(companiesReq);
+  try {
+    await Promise.all(
+      Array(num_of_companies)
+        .fill(0)
+        .map(async () => {
+          return await axios.post(`${SERVER_URL}/company`, genRandomCompany());
+        }),
+    );
+  } catch (error) {
+    console.log(error);
+  }
 
   console.log("Creating jobs...");
 
@@ -106,7 +108,11 @@ file.end();
     Array(num_of_jobs)
       .fill(0)
       .map(async () => {
-        return await axios.post(`${SERVER_URL}/job`, await genRandomJob());
+        try {
+          return await axios.post(`${SERVER_URL}/job`, await genRandomJob());
+        } catch (error) {
+          console.log(error);
+        }
       }),
   );
 

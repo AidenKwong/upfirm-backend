@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateCompanyDto } from "./dto/create-company.dto";
-import { FindManyCompaniesDto } from "./dto/find-many-companies.dto";
+import { FindManyDto } from "src/shared-dto/find-many.dto";
 
 @Injectable()
 export class CompanyService {
@@ -13,7 +13,7 @@ export class CompanyService {
     });
   }
 
-  async findMany(data: FindManyCompaniesDto) {
+  async findMany(data: FindManyDto) {
     return await this.prisma.company.findMany({
       ...data,
     });
@@ -23,6 +23,10 @@ export class CompanyService {
     return await this.prisma.company.findUnique({
       where: {
         id,
+      },
+      include: {
+        industry: true,
+        _count: true,
       },
     });
   }

@@ -8,9 +8,9 @@ import {
   Query,
 } from "@nestjs/common";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
+import { FindManyDto } from "src/shared-dto/find-many.dto";
 import { CompanyService } from "./company.service";
 import { CreateCompanyDto } from "./dto/create-company.dto";
-import { FindManyCompaniesDto } from "./dto/find-many-companies.dto";
 
 @Controller("company")
 export class CompanyController {
@@ -23,7 +23,7 @@ export class CompanyController {
   }
 
   @Get()
-  async findMany(@Query() dto: FindManyCompaniesDto) {
+  async findMany(@Query() dto: FindManyDto) {
     const { orderBy, where, include, ...rest } = dto;
 
     return await this.companyService.findMany({

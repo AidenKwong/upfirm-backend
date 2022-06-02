@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from "@nestjs/common";
 import { JobService } from "./job.service";
 import { CreateJobDto } from "./dto/create-job.dto";
 import { UpdateJobDto } from "./dto/update-job.dto";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
+import { FindManyDto } from "src/shared-dto/find-many.dto";
 
 @Controller("job")
 export class JobController {
@@ -24,22 +26,14 @@ export class JobController {
   }
 
   @Get()
-  findAll() {
-    return this.jobService.findAll();
-  }
-
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.jobService.findOne(+id);
-  }
-
-  @Patch(":id")
-  update(@Param("id") id: string, @Body() updateJobDto: UpdateJobDto) {
-    return this.jobService.update(+id, updateJobDto);
-  }
-
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.jobService.remove(+id);
+  async findMany(@Query() dto: FindManyDto) {
+    const { orderBy, where, include, select, ...rest } = dto;
+    return await this.jobService.findMany({
+      ...rest,
+      orderBy: orderBy && JSON.parse(orderBy),
+      where: where && JSON.parse(where),
+      include: include && JSON.parse(include),
+      select: select && JSON.parse(select),
+    });
   }
 }
