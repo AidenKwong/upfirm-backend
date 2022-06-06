@@ -34,4 +34,9 @@ export class CreateJobDto {
   @IsNumber()
   @IsNotEmpty()
   userId: number;
+
+  @Type(() => Number)
+  @IsNumber()
+  @IsNotEmpty()
+  rating: number;
 }

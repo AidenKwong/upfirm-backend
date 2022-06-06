@@ -3,6 +3,9 @@ const { faker } = require("@faker-js/faker");
 const { country_list, industry_list } = require("./constants.ts");
 const fs = require("fs");
 require("dotenv").config();
+const axiosRetry = require("axios-retry");
+
+axiosRetry(axios, { retries: 3 });
 
 interface Country {
   name: string;
@@ -10,11 +13,11 @@ interface Country {
 }
 
 const SERVER_URL = `http://localhost:${process.env.PORT}`;
-const num_of_users = 100;
-const num_of_companies = 50;
-const num_of_jobs = 100;
-const num_of_posts = 500;
-const num_of_comments = 500;
+const num_of_users = 1000;
+const num_of_companies = 500;
+const num_of_jobs = 1000;
+const num_of_posts = 5000;
+const num_of_comments = 10000;
 
 const country_name_list = country_list.map((country: Country) => country.name);
 
@@ -60,37 +63,37 @@ file.write("]");
 file.end();
 
 (async () => {
-  console.log("Creating users...");
-  const usersReq = users.map(async (user) => {
-    return await axios.post(`${SERVER_URL}/user`, user);
-  });
-  await Promise.all(usersReq);
-
-  console.log("Creating industries...");
-  const industries = industry_list;
-  const industriesReq = industries.map(async (industry: string) => {
-    return await axios.post(`${SERVER_URL}/industry`, {
-      name: industry,
-    });
-  });
-
-  await Promise.all(industriesReq);
-
-  console.log("Creating companies...");
-
-  try {
-    await Promise.all(
-      Array(num_of_companies)
-        .fill(0)
-        .map(async () => {
-          return await axios.post(`${SERVER_URL}/company`, genRandomCompany());
-        }),
+  for await (const user of users) {
+    const { data } = await Promise.resolve(
+      await axios.post(`${SERVER_URL}/user`, user),
     );
-  } catch (error) {
-    console.log(error);
+    process.stdout.write(`Created user with id ${data.id}\r`);
   }
 
-  console.log("Creating jobs...");
+  console.log("\n");
+
+  const industries = industry_list;
+  for await (const industry of industries) {
+    const { data } = await Promise.resolve(
+      await axios.post(`${SERVER_URL}/industry`, {
+        name: industry,
+      }),
+    );
+    process.stdout.write(`Created industry with id ${data.id}\r`);
+  }
+
+  console.log("\n");
+
+  const companies = Array.from(new Array(num_of_companies), genRandomCompany);
+
+  for await (const company of companies) {
+    const { data } = await Promise.resolve(
+      await axios.post(`${SERVER_URL}/company`, company),
+    );
+    process.stdout.write(`Created company with id ${data.id}\r`);
+  }
+
+  console.log("\n");
 
   const genRandomJob = async () => {
     return {
@@ -100,23 +103,22 @@ file.end();
       salary: Math.ceil(Math.random() * 100000),
       startDate: faker.date.past().toISOString(),
       endDate: faker.date.future().toISOString(),
+      rating: Math.ceil(Math.random() * 5),
       userId: Math.ceil(Math.random() * num_of_users),
     };
   };
 
-  await Promise.all(
-    Array(num_of_jobs)
-      .fill(0)
-      .map(async () => {
-        try {
-          return await axios.post(`${SERVER_URL}/job`, await genRandomJob());
-        } catch (error) {
-          console.log(error);
-        }
-      }),
-  );
+  const jobs = Array.from(new Array(num_of_jobs), genRandomJob);
 
-  console.log("Creating posts...");
+  for await (const job of jobs) {
+    const { data } = await Promise.resolve(
+      await axios.post(`${SERVER_URL}/job`, job),
+    );
+    process.stdout.write(`Created job with id ${data.id}\r`);
+  }
+
+  console.log("\n");
+
   const genRandomPost = async () => {
     return {
       title: faker.lorem.sentence(),
@@ -126,15 +128,16 @@ file.end();
     };
   };
 
-  await Promise.all(
-    Array(num_of_posts)
-      .fill(0)
-      .map(async () => {
-        return await axios.post(`${SERVER_URL}/post`, await genRandomPost());
-      }),
-  );
+  const posts = Array.from(new Array(num_of_posts), genRandomPost);
 
-  console.log("Creating comments...");
+  for await (const post of posts) {
+    const { data } = await Promise.resolve(
+      await axios.post(`${SERVER_URL}/post`, post),
+    );
+    process.stdout.write(`Created post with id ${data.id}\r`);
+  }
+
+  console.log("\n");
 
   const genRandomComment = async () => {
     return {
@@ -144,25 +147,14 @@ file.end();
     };
   };
 
-  await Promise.all(
-    Array(num_of_comments)
-      .fill(0)
-      .map(async () => {
-        return await axios.post(
-          `${SERVER_URL}/comment`,
-          await genRandomComment(),
-        );
-      }),
-  );
-  console.log("Creating second batch of comments...");
-  await Promise.all(
-    Array(num_of_comments)
-      .fill(0)
-      .map(async () => {
-        return await axios.post(
-          `${SERVER_URL}/comment`,
-          await genRandomComment(),
-        );
-      }),
-  );
+  const comments = Array.from(new Array(num_of_comments), genRandomComment);
+
+  for await (const comment of comments) {
+    const { data } = await Promise.resolve(
+      await axios.post(`${SERVER_URL}/comment`, comment),
+    );
+    process.stdout.write(`Created comment with id ${data.id}\r`);
+  }
+
+  console.log("\n");
 })();

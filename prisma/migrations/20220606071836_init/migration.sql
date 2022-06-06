@@ -45,6 +45,7 @@ CREATE TABLE "Job" (
     "startDate" TIMESTAMP(3) NOT NULL,
     "endDate" TIMESTAMP(3) NOT NULL,
     "userId" INTEGER NOT NULL,
+    "rating" INTEGER NOT NULL,
 
     CONSTRAINT "Job_pkey" PRIMARY KEY ("id")
 );
@@ -56,6 +57,8 @@ CREATE TABLE "Post" (
     "content" TEXT NOT NULL,
     "authorId" INTEGER NOT NULL,
     "companyId" INTEGER NOT NULL,
+    "likes" INTEGER[],
+    "dislikes" INTEGER[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
@@ -67,6 +70,8 @@ CREATE TABLE "Comment" (
     "content" TEXT NOT NULL,
     "authorId" INTEGER NOT NULL,
     "postId" INTEGER NOT NULL,
+    "likes" INTEGER[],
+    "dislikes" INTEGER[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Comment_pkey" PRIMARY KEY ("id")
