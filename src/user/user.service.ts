@@ -10,12 +10,14 @@ export class UserService {
     const { password, ...rest } = data;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    return await this.prisma.user.create({
+    const newUser = await this.prisma.user.create({
       data: {
         ...rest,
         password: hashedPassword,
       },
     });
+    delete newUser.password;
+    return newUser;
   }
 
   // used by auth.module for authentication

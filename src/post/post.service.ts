@@ -26,4 +26,12 @@ export class PostService {
       },
     });
   }
+
+  async findOneById(id: number) {
+    return await this.prisma.post.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
 }

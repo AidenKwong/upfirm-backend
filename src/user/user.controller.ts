@@ -1,11 +1,13 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Post,
   Request,
   UseGuards,
 } from "@nestjs/common";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { JwtGuardReturn } from "src/auth/interface/jwt.interface";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -17,7 +19,13 @@ export class UserController {
 
   @Post()
   async createUser(@Body() dto: CreateUserDto) {
-    return await this.userService.create(dto);
+    try {
+      return await this.userService.create(dto);
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        throw new ForbiddenException(error);
+      }
+    }
   }
 
   @UseGuards(JwtAuthGuard)
